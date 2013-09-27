@@ -1,4 +1,4 @@
-# Jasmine JUnit Xml Formatter
+# Jasmine JUnit Xml Formatter [![Build Status](https://travis-ci.org/jasmine/jasmine_junitxml_formatter.png?branch=master)](https://travis-ci.org/jasmine/jasmine_junitxml_formatter)
 
 Format jasmine results as junit compatible XML so CI servers, like Hudson/Jenkins can parse it
 
@@ -18,7 +18,8 @@ Or install it yourself as:
 
 ## Usage
 
-Now when you run `rake jasmine:ci` a JUnit compatible XML file will be written
+- In rails, simply `run rake jasmine:ci`, tests should generate a JUnit XML file
+- Outside of rails, you may need to add `require 'jasmine_junitxml_formatter'` to your Rakefile after jasmine is required.
 
 ## Contributing
 

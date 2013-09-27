@@ -16,7 +16,6 @@ describe Jasmine::Formatters::JunitXml do
   end
 
   let(:file_stub) { FakeFile.new }
-  let(:config) { nil }
 
   describe 'creating the xml' do
     before do
@@ -28,7 +27,7 @@ describe Jasmine::Formatters::JunitXml do
     describe 'when the full suite passes' do
       it 'shows the spec counts' do
         results = [passing_result('fullName' => 'Passing test', 'description' => 'test')]
-        subject = Jasmine::Formatters::JunitXml.new(config)
+        subject = Jasmine::Formatters::JunitXml.new
 
         subject.format(results)
         subject.done
@@ -48,7 +47,7 @@ describe Jasmine::Formatters::JunitXml do
       it 'shows the spec counts' do
         results1 = [passing_result]
         results2 = [failing_result]
-        subject = Jasmine::Formatters::JunitXml.new(config)
+        subject = Jasmine::Formatters::JunitXml.new
 
         subject.format(results1)
         subject.format(results2)
@@ -86,7 +85,7 @@ YAML
 
     it 'writes to the specified location' do
       results = [passing_result('fullName' => 'Passing test', 'description' => 'test')]
-      subject = Jasmine::Formatters::JunitXml.new(config)
+      subject = Jasmine::Formatters::JunitXml.new
 
       subject.format(results)
       subject.done

@@ -21,6 +21,18 @@ Or install it yourself as:
 - In rails, simply `run rake jasmine:ci`, tests should generate a JUnit XML file
 - Outside of rails, you may need to add `require 'jasmine_junitxml_formatter'` to your Rakefile after jasmine is required.
 
+### Configuring the output location:
+
+Create a jasmine_junitxml_formatter.yml in spec/javascripts/support with something like this:
+
+    ---
+    junit_xml_path: /absolute/path/to/output
+
+The config file will be processed with ERB if you want to make the destination dynamic. e.g.
+
+    ---
+    junit_xml_path: <%= File.join(Dir.pwd, 'some', 'relative', 'path')
+
 ## Contributing
 
 1. Fork it

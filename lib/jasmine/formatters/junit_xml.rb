@@ -5,6 +5,7 @@ module Jasmine
     class JunitXml < Base
       def initialize(config)
         super
+        load_config
         @doc = Nokogiri::XML '<testsuites></testsuites>', nil, 'UTF-8'
       end
 
@@ -37,14 +38,23 @@ module Jasmine
       end
 
       def done
-        File.open(File.join(config.junit_xml_location, 'junit_results.xml'), 'w') do |file|
+        File.open(File.join(output_dir, 'junit_results.xml'), 'w') do |file|
           file.puts doc.to_xml(indent: 2)
         end
       end
 
       private
-      attr_reader :doc
+      attr_reader :doc, :config
 
+      def output_dir
+        config['junit_xml_path'] || Dir.pwd
+      end
+
+      def load_config
+        filepath = File.join(Dir.pwd, 'spec', 'javascripts', 'support', 'jasmine_junitxml_formatter.yml')
+        @config = YAML::load(ERB.new(File.read(filepath)).result(binding)) if File.exist?(filepath)
+        @config ||= {}
+      end
     end
   end
 end

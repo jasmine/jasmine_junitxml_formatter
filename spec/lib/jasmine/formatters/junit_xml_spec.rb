@@ -16,15 +16,15 @@ describe Jasmine::Formatters::JunitXml do
   end
 
   let(:file_stub) { FakeFile.new }
+  let(:config) { nil }
 
-  let(:config) { double(:config, :junit_xml_location => '/junit_path/') }
+  describe 'creating the xml' do
+    before do
+      Dir.stub(:pwd).and_return('/junit_path')
+      File.stub(:open).and_call_original
+      File.stub(:open).with('/junit_path/junit_results.xml', 'w').and_yield(file_stub)
+    end
 
-  before do
-    File.stub(:open).and_call_original
-    File.stub(:open).with('/junit_path/junit_results.xml', 'w').and_yield(file_stub)
-  end
-
-  describe '#summary' do
     describe 'when the full suite passes' do
       it 'shows the spec counts' do
         results = [passing_result('fullName' => 'Passing test', 'description' => 'test')]
@@ -68,6 +68,29 @@ describe Jasmine::Formatters::JunitXml do
         xml.xpath('//testcase/failure').first['message'].should == 'a failure message'
         xml.xpath('//testcase/failure').first.content.should == 'a stack trace'
       end
+    end
+  end
+
+  describe 'when the output directory has been customized' do
+    before do
+      Dir.stub(:pwd).and_return('/default_path')
+      config_path = File.join('/default_path', 'spec', 'javascripts', 'support', 'jasmine_junitxml_formatter.yml')
+      File.stub(:exist?).with(config_path).and_return(true)
+      File.stub(:read).with(config_path).and_return <<-YAML
+---
+junit_xml_path: "/custom_path"
+YAML
+      File.stub(:open).and_call_original
+      File.stub(:open).with('/custom_path/junit_results.xml', 'w').and_yield(file_stub)
+    end
+
+    it 'writes to the specified location' do
+      results = [passing_result('fullName' => 'Passing test', 'description' => 'test')]
+      subject = Jasmine::Formatters::JunitXml.new(config)
+
+      subject.format(results)
+      subject.done
+      file_stub.content.should_not == ''
     end
   end
 

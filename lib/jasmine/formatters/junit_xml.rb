@@ -37,6 +37,7 @@ module Jasmine
       end
 
       def done
+        FileUtils.mkdir_p(output_dir) # ensure path exists
         File.open(File.join(output_dir, 'junit_results.xml'), 'w') do |file|
           file.puts doc.to_xml(indent: 2)
         end
@@ -50,7 +51,11 @@ module Jasmine
       end
 
       def load_config
-        filepath = File.join(Dir.pwd, 'spec', 'javascripts', 'support', 'jasmine_junitxml_formatter.yml')
+        if ENV['JASMINE_CONFIG_PATH'] # allow overwriting of YML location using gem's default ENV variable
+          filepath = ENV['JASMINE_CONFIG_PATH']
+        else 
+          filepath = File.join(Dir.pwd, 'spec', 'javascripts', 'support', 'jasmine_junitxml_formatter.yml')
+        end
         @config = YAML::load(ERB.new(File.read(filepath)).result(binding)) if File.exist?(filepath)
         @config ||= {}
       end

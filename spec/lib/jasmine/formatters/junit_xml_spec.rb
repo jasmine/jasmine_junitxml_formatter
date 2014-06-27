@@ -17,6 +17,10 @@ describe Jasmine::Formatters::JunitXml do
 
   let(:file_stub) { FakeFile.new }
 
+  before do
+    allow(FileUtils).to receive(:mkdir_p)
+  end
+
   describe 'creating the xml' do
     before do
       allow(Dir).to receive(:pwd).and_return('/junit_path')
@@ -90,6 +94,14 @@ YAML
       subject.format(results)
       subject.done
       expect(file_stub.content).to_not eq ''
+    end
+
+    it 'creates the directory if it does not exist' do
+      subject = Jasmine::Formatters::JunitXml.new
+
+      subject.format([])
+      expect(FileUtils).to receive(:mkdir_p).with('/custom_path')
+      subject.done
     end
   end
 

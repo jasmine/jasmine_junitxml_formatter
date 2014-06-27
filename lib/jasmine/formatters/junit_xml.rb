@@ -37,6 +37,7 @@ module Jasmine
       end
 
       def done
+        FileUtils.mkdir_p(output_dir)
         File.open(File.join(output_dir, 'junit_results.xml'), 'w') do |file|
           file.puts doc.to_xml(indent: 2)
         end

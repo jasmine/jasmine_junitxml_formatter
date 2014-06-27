@@ -19,9 +19,9 @@ describe Jasmine::Formatters::JunitXml do
 
   describe 'creating the xml' do
     before do
-      Dir.stub(:pwd).and_return('/junit_path')
-      File.stub(:open).and_call_original
-      File.stub(:open).with('/junit_path/junit_results.xml', 'w').and_yield(file_stub)
+      allow(Dir).to receive(:pwd).and_return('/junit_path')
+      allow(File).to receive(:open).and_call_original
+      allow(File).to receive(:open).with('/junit_path/junit_results.xml', 'w').and_yield(file_stub)
     end
 
     describe 'when the full suite passes' do
@@ -34,12 +34,12 @@ describe Jasmine::Formatters::JunitXml do
         xml = Nokogiri::XML(file_stub.content)
 
         testsuite = xml.xpath('/testsuites/testsuite').first
-        testsuite['tests'].should == '1'
-        testsuite['failures'].should == '0'
-        testsuite['name'].should == 'Passing'
+        expect(testsuite['tests']).to eq '1'
+        expect(testsuite['failures']).to eq '0'
+        expect(testsuite['name']).to eq 'Passing'
 
-        xml.xpath('//testcase').size.should == 1
-        xml.xpath('//testcase').first['name'].should == 'test'
+        expect(xml.xpath('//testcase').size).to eq 1
+        expect(xml.xpath('//testcase').first['name']).to eq 'test'
       end
     end
 
@@ -55,32 +55,32 @@ describe Jasmine::Formatters::JunitXml do
         xml = Nokogiri::XML(file_stub.content)
 
         testsuite = xml.xpath('/testsuites/testsuite').first
-        testsuite['tests'].should == '1'
-        testsuite['failures'].should == '0'
+        expect(testsuite['tests']).to eq '1'
+        expect(testsuite['failures']).to eq '0'
 
         testsuite = xml.xpath('/testsuites/testsuite')[1]
-        testsuite['tests'].should == '1'
-        testsuite['failures'].should == '1'
+        expect(testsuite['tests']).to eq '1'
+        expect(testsuite['failures']).to eq '1'
 
-        xml.xpath('//testcase').size.should == 2
-        xml.xpath('//testcase/failure').size.should == 1
-        xml.xpath('//testcase/failure').first['message'].should == 'a failure message'
-        xml.xpath('//testcase/failure').first.content.should == 'a stack trace'
+        expect(xml.xpath('//testcase').size).to eq 2
+        expect(xml.xpath('//testcase/failure').size).to eq 1
+        expect(xml.xpath('//testcase/failure').first['message']).to eq 'a failure message'
+        expect(xml.xpath('//testcase/failure').first.content).to eq 'a stack trace'
       end
     end
   end
 
   describe 'when the output directory has been customized' do
     before do
-      Dir.stub(:pwd).and_return('/default_path')
+      allow(Dir).to receive(:pwd).and_return('/default_path')
       config_path = File.join('/default_path', 'spec', 'javascripts', 'support', 'jasmine_junitxml_formatter.yml')
-      File.stub(:exist?).with(config_path).and_return(true)
-      File.stub(:read).with(config_path).and_return <<-YAML
+      allow(File).to receive(:exist?).with(config_path).and_return(true)
+      allow(File).to receive(:read).with(config_path).and_return <<-YAML
 ---
 junit_xml_path: "/custom_path"
 YAML
-      File.stub(:open).and_call_original
-      File.stub(:open).with('/custom_path/junit_results.xml', 'w').and_yield(file_stub)
+      allow(File).to receive(:open).and_call_original
+      allow(File).to receive(:open).with('/custom_path/junit_results.xml', 'w').and_yield(file_stub)
     end
 
     it 'writes to the specified location' do
@@ -89,7 +89,7 @@ YAML
 
       subject.format(results)
       subject.done
-      file_stub.content.should_not == ''
+      expect(file_stub.content).to_not eq ''
     end
   end
 

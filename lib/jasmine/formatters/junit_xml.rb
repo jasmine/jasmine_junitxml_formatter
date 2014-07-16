@@ -51,7 +51,11 @@ module Jasmine
       end
 
       def load_config
-        filepath = File.join(Dir.pwd, 'spec', 'javascripts', 'support', 'jasmine_junitxml_formatter.yml')
+        if ENV['JASMINE_JUNIT_XML_CONFIG_PATH']
+          filepath = ENV['JASMINE_JUNIT_XML_CONFIG_PATH']
+        else
+          filepath = File.join(Dir.pwd, 'spec', 'javascripts', 'support', 'jasmine_junitxml_formatter.yml')
+        end
         @config = YAML::load(ERB.new(File.read(filepath)).result(binding)) if File.exist?(filepath)
         @config ||= {}
       end

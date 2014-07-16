@@ -105,6 +105,41 @@ YAML
     end
   end
 
+  describe 'with a custom config file path' do
+    before do
+      allow(Dir).to receive(:pwd).and_return('/default_path')
+      config_path = File.join('/other_path', 'jasmine_junitxml_formatter.yml')
+      allow(File).to receive(:exist?).with(config_path).and_return(true)
+      allow(File).to receive(:read).with(config_path).and_return <<-YAML
+---
+junit_xml_path: "/other_custom_path"
+YAML
+      allow(File).to receive(:open).and_call_original
+      allow(File).to receive(:open).with('/other_custom_path/junit_results.xml', 'w').and_yield(file_stub)
+    end
+
+    subject do
+      ENV['JASMINE_JUNIT_XML_CONFIG_PATH'] = '/other_path/jasmine_junitxml_formatter.yml'
+      formatter = Jasmine::Formatters::JunitXml.new
+      ENV.delete 'JASMINE_JUNIT_XML_CONFIG_PATH'
+      formatter
+    end
+
+    it 'writes to the specified location' do
+      results = [passing_result('fullName' => 'Passing test', 'description' => 'test')]
+
+      subject.format(results)
+      subject.done
+      expect(file_stub.content).to_not eq ''
+    end
+
+    it 'creates the directory if it does not exist' do
+      subject.format([])
+      expect(FileUtils).to receive(:mkdir_p).with('/other_custom_path')
+      subject.done
+    end
+  end
+
   def failing_result(options = {})
     Jasmine::Result.new(failing_raw_result.merge(options))
   end

@@ -4,7 +4,7 @@ module Jasmine
   module Formatters
     class JunitXml
       def initialize
-        load_config
+        load_config ENV['JASMINE_JUNIT_XML_CONFIG_PATH']
         @doc = Nokogiri::XML '<testsuites></testsuites>', nil, 'UTF-8'
       end
 
@@ -50,12 +50,8 @@ module Jasmine
         config['junit_xml_path'] || Dir.pwd
       end
 
-      def load_config
-        if ENV['JASMINE_JUNIT_XML_CONFIG_PATH']
-          filepath = ENV['JASMINE_JUNIT_XML_CONFIG_PATH']
-        else
-          filepath = File.join(Dir.pwd, 'spec', 'javascripts', 'support', 'jasmine_junitxml_formatter.yml')
-        end
+      def load_config(filepath=nil)
+        filepath ||= File.join(Dir.pwd, 'spec', 'javascripts', 'support', 'jasmine_junitxml_formatter.yml')
         @config = YAML::load(ERB.new(File.read(filepath)).result(binding)) if File.exist?(filepath)
         @config ||= {}
       end

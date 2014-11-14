@@ -22,6 +22,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec'
   spec.add_development_dependency "rake"
 
-  spec.add_dependency 'jasmine', '~> 2.0.0.alpha'
+  spec.add_dependency 'jasmine', '~> 2.0'
   spec.add_dependency "nokogiri"
 end

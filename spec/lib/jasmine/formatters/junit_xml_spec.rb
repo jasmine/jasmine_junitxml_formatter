@@ -72,6 +72,15 @@ describe Jasmine::Formatters::JunitXml do
         expect(xml.xpath('//testcase/failure').first.content).to eq 'a stack trace'
       end
     end
+
+    describe 'with randomization information' do
+      it 'still works' do
+        subject.format([])
+        expect {
+          subject.done({'order' => {'random' => true, 'seed' => '4321'}})
+        }.not_to raise_error
+      end
+    end
   end
 
   describe 'when the output directory has been customized' do

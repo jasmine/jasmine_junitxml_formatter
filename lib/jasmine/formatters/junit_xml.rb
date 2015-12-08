@@ -5,24 +5,22 @@ module Jasmine
     class JunitXml
       def initialize
         load_config ENV['JASMINE_JUNIT_XML_CONFIG_PATH']
-        @doc = Nokogiri::XML '<testsuites></testsuites>', nil, 'UTF-8'
+        @doc = Nokogiri::XML '<testsuites><testsuite name="Jasmine Suite"></testsuite></testsuites>', nil, 'UTF-8'
+        @spec_count = 0
+        @failure_count = 0
       end
 
       def format(results)
-        testsuites = doc.at_css('testsuites')
+        testsuite = doc.at_css('testsuites testsuite')
+
+        @spec_count += results.size
 
         results.each do |result|
-          testsuite = Nokogiri::XML::Node.new 'testsuite', doc
-          testsuite['tests'] = 1
-          testsuite['failures'] = result.failed? ? 1 : 0
-          testsuite['errors'] = 0
-          testsuite['name'] = result.suite_name
-          testsuite.parent = testsuites
-
           testcase = Nokogiri::XML::Node.new 'testcase', doc
           testcase['name'] = result.description
 
           if result.failed?
+            @failure_count += 1
             result.failed_expectations.each do |failed_exp|
               failure = Nokogiri::XML::Node.new 'failure', doc
               failure['message'] = failed_exp.message
@@ -36,7 +34,31 @@ module Jasmine
         end
       end
 
-      def done(run_details={})
+      def done(run_details)
+        testsuite = doc.at_css('testsuites testsuite')
+        properties = Nokogiri::XML::Node.new 'properties', doc
+        properties.parent = testsuite
+
+        if run_details['order']
+          random = Nokogiri::XML::Node.new 'property', doc
+          random['name'] = 'random'
+          random['value'] = run_details['order']['random']
+
+          random.parent = properties
+
+          if run_details['order']['random']
+            seed = Nokogiri::XML::Node.new 'property', doc
+            seed['name'] = 'seed'
+            seed['value'] = run_details['order']['seed']
+
+            seed.parent = properties
+          end
+        end
+
+        testsuite['tests'] = @spec_count
+        testsuite['failures'] = @failure_count
+        testsuite['errors'] = 0
+
         FileUtils.mkdir_p(output_dir)
         File.open(File.join(output_dir, 'junit_results.xml'), 'w') do |file|
           file.puts doc.to_xml(indent: 2)

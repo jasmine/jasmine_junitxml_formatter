@@ -17,6 +17,7 @@ module Jasmine
 
         results.each do |result|
           testcase = Nokogiri::XML::Node.new 'testcase', doc
+          testcase['classname'] = result.suite_name
           testcase['name'] = result.description
 
           if result.failed?

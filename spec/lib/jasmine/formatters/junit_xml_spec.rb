@@ -43,6 +43,7 @@ describe Jasmine::Formatters::JunitXml do
         expect(testsuite['name']).to eq 'Jasmine Suite'
 
         expect(xml.xpath('//testcase').size).to eq 1
+        expect(xml.xpath('//testcase').first['classname']).to eq 'Passing'
         expect(xml.xpath('//testcase').first['name']).to eq 'test'
       end
     end

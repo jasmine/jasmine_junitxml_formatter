@@ -56,6 +56,23 @@ module Jasmine
           end
         end
 
+        global_failures = run_details.fetch('failedExpectations', [])
+        if global_failures.size > 0
+          @failure_count += 1
+          testcase = Nokogiri::XML::Node.new 'testcase', doc
+          testcase['name'] = 'Failure in afterAll'
+
+          global_failures.each do |failed_expectation|
+            failure = Nokogiri::XML::Node.new 'failure', doc
+            failure['message'] = failed_expectation['message']
+            failure['type'] = 'Failure'
+            failure.content = failed_expectation['stack']
+            failure.parent = testcase
+          end
+
+          testcase.parent = testsuite
+        end
+
         testsuite['tests'] = @spec_count
         testsuite['failures'] = @failure_count
         testsuite['errors'] = 0

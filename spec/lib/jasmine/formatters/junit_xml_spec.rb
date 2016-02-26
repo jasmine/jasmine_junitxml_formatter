@@ -71,6 +71,25 @@ describe Jasmine::Formatters::JunitXml do
       end
     end
 
+    describe 'when there are failures in jasmineDone from a global afterAll' do
+      it 'adds a failing testcase node' do
+        subject = Jasmine::Formatters::JunitXml.new
+
+        subject.done({ 'failedExpectations' => [{ 'message' => 'Failure Message', 'stack' => 'failure stack' }] })
+        xml = Nokogiri::XML(file_stub.content)
+
+        expect(xml.xpath('/testsuites/testsuite').size).to eq(1)
+        testsuite = xml.xpath('/testsuites/testsuite').first
+        expect(testsuite['tests']).to eq '0'
+        expect(testsuite['failures']).to eq '1'
+
+        expect(xml.xpath('//testcase').size).to eq 1
+        expect(xml.xpath('//testcase/failure').size).to eq 1
+        expect(xml.xpath('//testcase/failure').first['message']).to eq 'Failure Message'
+        expect(xml.xpath('//testcase/failure').first.content).to eq 'failure stack'
+      end
+    end
+
     describe 'with randomization information' do
       it 'includes randomization seed when randomized' do
         subject.format([])

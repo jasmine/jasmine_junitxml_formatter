@@ -48,6 +48,27 @@ describe Jasmine::Formatters::JunitXml do
       end
     end
 
+    describe 'when there are pending specs' do
+      it "shows the spec counts" do
+        results = [pending_result('fullName' => 'Pending test', 'description' => 'test')]
+        subject = Jasmine::Formatters::JunitXml.new
+
+        subject.format(results)
+        subject.done({})
+        xml = Nokogiri::XML(file_stub.content)
+
+        testsuite = xml.xpath('/testsuites/testsuite').first
+        expect(testsuite['tests']).to eq '1'
+        expect(testsuite['failures']).to eq '0'
+        expect(testsuite['name']).to eq 'Jasmine Suite'
+
+        expect(xml.xpath('//testcase').size).to eq 1
+        expect(xml.xpath('//testcase').first['classname']).to eq 'Pending'
+        expect(xml.xpath('//testcase').first['name']).to eq 'test'
+        expect(xml.xpath('//testcase/skipped').first).to_not eq(nil)
+      end
+    end
+
     describe 'when there are failures' do
       it 'shows the spec counts' do
         results1 = [passing_result]
@@ -189,5 +210,9 @@ YAML
 
   def passing_result(options = {})
     Jasmine::Result.new(passing_raw_result.merge(options))
+  end
+
+  def pending_result(options = {})
+    Jasmine::Result.new(pending_raw_result.merge(options))
   end
 end

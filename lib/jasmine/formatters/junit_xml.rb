@@ -8,6 +8,7 @@ module Jasmine
         @doc = Nokogiri::XML '<testsuites><testsuite name="Jasmine Suite"></testsuite></testsuites>', nil, 'UTF-8'
         @spec_count = 0
         @failure_count = 0
+        @pending_count = 0
       end
 
       def format(results)
@@ -29,6 +30,10 @@ module Jasmine
               failure.content = failed_exp.stack
               failure.parent = testcase
             end
+          elsif result.pending?
+            @pending_count += 1
+            skipped = Nokogiri::XML::Node.new('skipped', doc)
+            skipped.parent = testcase
           end
 
           testcase.parent = testsuite

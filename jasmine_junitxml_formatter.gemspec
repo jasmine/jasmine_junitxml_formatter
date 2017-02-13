@@ -3,6 +3,17 @@ lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'jasmine_junitxml_formatter/version'
 
+def ruby_version_less_than(target_version)
+  version_parts = RUBY_VERSION.split('.').map(&:to_i).zip(target_version)
+
+  version_parts.each do |(current_part, target_part)|
+    if current_part < target_part
+      return true
+    end
+  end
+  false
+end
+
 Gem::Specification.new do |spec|
   spec.name          = "jasmine_junitxml_formatter"
   spec.version       = JasmineJunitxmlFormatter::VERSION
@@ -23,5 +34,9 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake"
 
   spec.add_dependency 'jasmine', '~> 2.4'
-  spec.add_dependency "nokogiri"
+  if ruby_version_less_than([2,1,0])
+    s.add_dependency 'nokogiri', '< 1.7.0'
+  else
+    s.add_dependency 'nokogiri'
+  end
 end

@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
   spec.name          = "jasmine_junitxml_formatter"
   spec.version       = JasmineJunitxmlFormatter::VERSION
   spec.authors       = ["Gregg Van Hove"]
-  spec.email         = ["pair+gvanhove@pivotallabs.com"]
+  spec.email         = ["gvanhove@pivotal.io"]
   spec.description   = %q{Format jasmine results as junit compatible XML so CI servers, like Hudson/Jenkins can parse it}
   spec.summary       = %q{Format jasmine results as junit compatible XML so CI servers, like Hudson/Jenkins can parse it}
   spec.homepage      = "https://github.com/jasmine/jasmine_junitxml_formatter"

@@ -33,7 +33,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec'
   spec.add_development_dependency "rake"
 
-  spec.add_dependency 'jasmine', '~> 2.4'
+  spec.add_dependency 'jasmine', '~> 3.0'
   if ruby_version_less_than([2,1,0])
     spec.add_dependency 'nokogiri', '< 1.7.0'
   else

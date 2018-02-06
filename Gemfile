@@ -2,7 +2,10 @@ source 'https://rubygems.org'
 
 gemspec
 
-gem 'jasmine', :git => 'https://github.com/pivotal/jasmine-gem.git'
-# gem 'jasmine', :path => '../jasmine-gem'
+if ENV['TRAVIS']
+  gem 'jasmine', :git => 'https://github.com/pivotal/jasmine-gem.git'
+else
+  gem 'jasmine', :path => '../jasmine-gem'
+end
 
-gem 'rack', '< 2.0.0'
+gem 'rack'

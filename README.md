@@ -33,6 +33,13 @@ The config file will be processed with ERB if you want to make the destination d
     ---
     junit_xml_path: <%= File.join(Dir.pwd, 'some', 'relative', 'path')
 
+### Configuring the output filename:
+
+To configure the filename of the XML file that is generated, the `junit_xml_filename` configuration option can be used, otherwise the default filename is `junit_results.xml`
+
+    ---
+    junit_xml_filename: custom_filename.junit.xml
+
 ## Contributing
 
 1. Fork it

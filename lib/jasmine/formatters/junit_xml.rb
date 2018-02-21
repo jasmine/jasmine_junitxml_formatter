@@ -83,7 +83,7 @@ module Jasmine
         testsuite['errors'] = 0
 
         FileUtils.mkdir_p(output_dir)
-        File.open(File.join(output_dir, 'junit_results.xml'), 'w') do |file|
+        File.open(File.join(output_dir, output_filename), 'w') do |file|
           file.puts doc.to_xml(indent: 2)
         end
       end
@@ -93,6 +93,10 @@ module Jasmine
 
       def output_dir
         config['junit_xml_path'] || Dir.pwd
+      end
+
+      def output_filename
+        config['junit_xml_filename'] || 'junit_results.xml'
       end
 
       def load_config(filepath=nil)

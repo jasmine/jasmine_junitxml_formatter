@@ -169,6 +169,64 @@ YAML
     end
   end
 
+  describe 'when the output filename has been customized' do
+    before do
+      allow(Dir).to receive(:pwd).and_return('/default_path')
+    end
+
+    it 'writes to the specified location if provided in jasmine_junitxml_formatter.yml' do
+      config_path = File.join('/default_path', 'spec', 'javascripts', 'support', 'jasmine_junitxml_formatter.yml')
+      allow(File).to receive(:exist?).with(config_path).and_return(true)
+      allow(File).to receive(:read).with(config_path).and_return <<-YAML
+---
+junit_xml_filename: "custom_filename.junit.xml"
+YAML
+      allow(File).to receive(:open).and_call_original
+      allow(File).to receive(:open).with('/default_path/custom_filename.junit.xml', 'w').and_yield(file_stub)
+
+      results = [passing_result('fullName' => 'Passing test', 'description' => 'test')]
+      subject = Jasmine::Formatters::JunitXml.new
+
+      subject.format(results)
+      subject.done({})
+      expect(file_stub.content).to_not eq ''
+    end
+
+    it 'writes to default location if junit_xml_filename is not provided in jasmine_junitxml_formatter.yml' do
+      allow(File).to receive(:open).and_call_original
+      allow(File).to receive(:open).with('/default_path/junit_results.xml', 'w').and_yield(file_stub)
+
+      results = [passing_result('fullName' => 'Passing test', 'description' => 'test')]
+      subject = Jasmine::Formatters::JunitXml.new
+
+      subject.format(results)
+      subject.done({})
+      expect(file_stub.content).to_not eq ''
+    end
+  end
+
+  describe 'when both the output directory and output filename has been customized' do
+    it 'writes to the customized location using the customized filename if provided in jasmine_junitxml_formatter.yml' do
+      allow(Dir).to receive(:pwd).and_return('/default_path')
+      config_path = File.join('/default_path', 'spec', 'javascripts', 'support', 'jasmine_junitxml_formatter.yml')
+      allow(File).to receive(:exist?).with(config_path).and_return(true)
+      allow(File).to receive(:read).with(config_path).and_return <<-YAML
+---
+junit_xml_path: "/custom_path"
+junit_xml_filename: "custom_filename.junit.xml"
+YAML
+      allow(File).to receive(:open).and_call_original
+      allow(File).to receive(:open).with('/custom_path/custom_filename.junit.xml', 'w').and_yield(file_stub)
+
+      results = [passing_result('fullName' => 'Passing test', 'description' => 'test')]
+      subject = Jasmine::Formatters::JunitXml.new
+
+      subject.format(results)
+      subject.done({})
+      expect(file_stub.content).to_not eq ''
+    end
+  end
+
   describe 'with a custom config file path' do
     before do
       allow(Dir).to receive(:pwd).and_return('/default_path')

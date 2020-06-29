@@ -1,4 +1,4 @@
-# Jasmine JUnit Xml Formatter [![Build Status](https://travis-ci.org/jasmine/jasmine_junitxml_formatter.png?branch=master)](https://travis-ci.org/jasmine/jasmine_junitxml_formatter)
+# Jasmine JUnit Xml Formatter [![Build Status](https://travis-ci.org/jasmine/jasmine_junitxml_formatter.png?branch=main)](https://travis-ci.org/jasmine/jasmine_junitxml_formatter)
 
 Format jasmine results as junit compatible XML so CI servers, like Hudson/Jenkins can parse it
 

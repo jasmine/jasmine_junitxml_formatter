@@ -2,6 +2,10 @@
 
 Format jasmine results as junit compatible XML so CI servers, like Hudson/Jenkins can parse it
 
+## Deprecated
+The `jasmine_junitxml_formatter` gem is deprecated. There will be no further
+releases after the end of the Jasmine 3.x series.
+
 ## Installation
 
 Add this line to your application's Gemfile:

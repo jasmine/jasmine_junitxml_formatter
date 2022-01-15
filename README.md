@@ -1,10 +1,10 @@
-# Jasmine JUnit Xml Formatter [![Build Status](https://travis-ci.com/jasmine/jasmine_junitxml_formatter.png?branch=main)](https://travis-ci.com/jasmine/jasmine_junitxml_formatter)
+# Jasmine JUnit Xml Formatter
 
 Format jasmine results as junit compatible XML so CI servers, like Hudson/Jenkins can parse it
 
-## Deprecated
-The `jasmine_junitxml_formatter` gem is deprecated. There will be no further
-releases after the end of the Jasmine 3.x series.
+## Discontinued
+The `jasmine_junitxml_formatter` gem is discontinued. There will be no further
+releases.
 
 ## Installation
 
